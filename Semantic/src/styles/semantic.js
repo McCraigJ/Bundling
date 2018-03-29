@@ -1,4 +1,5 @@
 ﻿//Semantic js includes
-require("~semantic-ui-less/definitions/behaviours/visibility.js");
-//require("~semantic-ui-less/definitions/behaviours/sidebar");
-//require("~semantic-ui-less/definitions/behaviours/transition");
+require("../../node_modules/semantic-ui-less/definitions/behaviors/visibility.js");
+require("../../node_modules/semantic-ui-less/definitions/modules/sidebar.js");
+require("../../node_modules/semantic-ui-less/definitions/modules/transition.js");
+//require("../../node_modules/semantic-ui-less/definitions/modules/dropdown.js");

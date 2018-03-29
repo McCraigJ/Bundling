@@ -14,7 +14,7 @@ module.exports = {
       '../../theme.config$': path.join(__dirname, 'src/styles/theme.config')
     }
   },
-  module: {
+  module: {    
     rules: [
       // this handles .less translation
       {
@@ -38,5 +38,10 @@ module.exports = {
     new ExtractTextPlugin({
       filename: '[name].css'
     })
+    //,
+    //new webpack.SourceMapDevToolPlugin({
+    //  append: "\n//# sourceMappingURL=http://example.com/sourcemap/[url]",
+    //  filename: '[name].map'
+    //})
   ]
 };
