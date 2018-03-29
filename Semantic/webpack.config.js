@@ -1,65 +1,42 @@
-﻿const path = require('path');
-const webpack = require('webpack');
+﻿const webpack = require('webpack');
+const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const GLOBALS = {
-  'process.env.NODE_ENV': JSON.stringify('production')
-};
-const PROD = process.env.NODE_ENV === 'production';
-
 module.exports = {
-  debug: true,
-  devtool: PROD ? 'source-map' : 'eval-source-map',
-  noInfo: false,
-  entry: PROD ? './app/index' :
-    [
-      //'webpack-hot-middleware/client?reload=true', // reloads the page if hot module reloading fails.
-      './app/index'
-    ],
-  target: 'web',
+  entry: './src/styles.js',
   output: {
-    path: PROD ? __dirname + '/build' : __dirname + '/dist',
-    publicPath: '/',
+    path: path.join(__dirname + "/wwwroot", 'dist'),
     filename: 'bundle.js'
   },
-  devServer: {
-    contentBase: PROD ? './build' : './app'
+  resolve: {
+    extensions: ['.js', '.jsx'],
+    alias: {
+      '../../theme.config$': path.join(__dirname, 'src/styles/theme.config')
+    }
   },
-  plugins: PROD ?
-    [
-      new webpack.optimize.OccurenceOrderPlugin(),
-      new webpack.DefinePlugin(GLOBALS),
-      new ExtractTextPlugin('bundle.css'),
-      new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } })
-    ] :
-    [
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoErrorsPlugin()
-    ],
   module: {
-    loaders: [
-      { test: /\.js$/, include: path.join(__dirname, 'app'), loaders: ['babel'] },
+    rules: [
+      // this handles .less translation
       {
-        test: /\.css$/,
-        loader: PROD ?
-          ExtractTextPlugin.extract('style', 'css?sourceMap') :
-          'style!css?sourceMap'
+        use: ExtractTextPlugin.extract({
+          use: ['css-loader', 'less-loader']
+        }),
+        test: /\.less$/
       },
       {
-        test: /\.scss$/,
-        loader: PROD ?
-          ExtractTextPlugin.extract('style', 'css?sourceMap!resolve-url!sass?sourceMap') :
-          'style!css?sourceMap!resolve-url!sass?sourceMap'
+        test: /\.jpe?g$|\.gif$|\.png$|\.ttf$|\.eot$|\.svg$/,
+        use: 'file-loader?name=[name].[ext]?[hash]'
       },
-      { test: /\.(svg|png|jpe?g|gif)(\?\S*)?$/, loader: 'url?limit=100000&name=img/[name].[ext]' },
-      { test: /\.(eot|woff|woff2|ttf)(\?\S*)?$/, loader: 'url?limit=100000&name=fonts/[name].[ext]' }
+      {
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'url-loader?limit=10000&mimetype=application/fontwoff'
+      }
     ]
   },
-  sassLoader: {
-    includePaths: [path.resolve('./app')]
-  },
-  resolve: {
-    root: [path.resolve('./app')]
-  }
+  plugins: [
+    // this handles the bundled .css output file
+    new ExtractTextPlugin({
+      filename: '[name].css'
+    })
+  ]
 };
